@@ -1,24 +1,24 @@
-var i;
-var min = 372304;
-var max = 847060;
-var ans = new Array();
-for (i = min; i <= max; i++){
-	if((isIncrease(i)) && (isAdjacentDigits(i)))
-    	ans.push(i);
+// @ts-check
+
+const start = 372304;
+const  end = 847060;
+var arrAns = new Array();
+
+for (var i = start; i <= end; i++){
+	if((isIncrease(String(i))) && (isAdjacentDigits(String(i))))
+    	arrAns.push(i);
 }
-console.log(ans);
-console.log("ex1 ans: " + ans.length);
+console.log("ex1 arrAns: " + arrAns.length);
 
 function isIncrease(number) {
-	var digits = (""+number).split("");
-	var digitsSorted = (""+number).split("").sort(function(a, b){return a - b});
+	var digits = number.split("");
+	var digitsSorted = number.split("").sort();
 	return arraysEqual(digits, digitsSorted)
 };
     
 function arraysEqual(a, b) {
-	if (a === b) return true;
-    if (a == null || b == null) return false;
-	if (a.length !== b.length) return false;
+	if (a.length !== b.length) 
+		return false;
   
 	for (var i = 0; i < a.length; i++) {
     	if (a[i] !== b[i]) 
@@ -28,11 +28,12 @@ function arraysEqual(a, b) {
 }
     
 function isAdjacentDigits(number) {
-	var strNum = number.toString();
-	for (var i = 1; i < strNum.length ; i++) {
+	for (var i = 1; i < number.length; i++) {
     	if (number[i - 1] == number[i]) 
         	return true;
   	}
-    return false;
+	return false;
 };
     
+
+
