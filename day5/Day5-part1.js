@@ -9,14 +9,14 @@ function getValue(index,intCode, parameter){
 
 function calcIntCode(intCode) {
     for(var i = 0; i < intCode.length ;){
-        var command = calcInstruction(intCode[i]);
-        switch(command[0]){
+        var instruction = calcInstruction(intCode[i]);
+        switch(instruction.Opcode) {
             case 1:
-                intCode[intCode[i+3]] = intCode[getValue(i+1,intCode,command[1][1])] + intCode[getValue(i+2,intCode,command[1][0])]; 
+                intCode[intCode[i+3]] = intCode[getValue(i+1,intCode,instruction.Mode[1])] + intCode[getValue(i+2,intCode,instruction.Mode[0])]; 
                 i+=4;
                 break;
             case 2:
-                intCode[intCode[i+3]] = intCode[getValue(i+1,intCode,command[1][1])] * intCode[getValue(i+2,intCode,command[1][0])];
+                intCode[intCode[i+3]] = intCode[getValue(i+1,intCode,instruction.Mode[1])] * intCode[getValue(i+2,intCode,instruction.Mode[0])];
                 i+=4;  
                 break;
             case 3:
@@ -24,14 +24,14 @@ function calcIntCode(intCode) {
                 i+=2;
                 break;
             case 4:
-                var tempAns = intCode[getValue(i+1,intCode,command[1][1])];
+                var tempAns = intCode[getValue(i+1,intCode,instruction.Mode[1])];
                 if (tempAns !== 0 && tempAns !== NaN)
-                    return intCode[getValue(i+1,intCode,command[1][1])]
+                    return intCode[getValue(i+1,intCode,instruction.Mode[1])]
                 i+=2;
-                break;
+                break;      
             case 99:
                 return intCode[0];
-             default:
+            default:
                  return -1;
          }
     }
@@ -43,5 +43,5 @@ function calcInstruction(instruction){
     var mode = Array.from(Math.floor(instruction/100).toString()).map(Number);  
     if (instruction.toString().length < 4)
         mode.unshift(0);  
-    return [opcode, mode]
+    return {Opcode: opcode, Mode: mode}
 }
