@@ -4,7 +4,7 @@ const destination = "COM";
 
 // claculate cross platform path
 const path = require('path');
-const calcedPath = path.join('Day6', 'input2.txt');
+const calcedPath = path.join('Day6', 'input.txt');
 
 //read input from file
 const input = require('fs')
