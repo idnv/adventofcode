@@ -1,6 +1,11 @@
+var a = ["1", "2"];
+var b = ["3", "4"];
+a.push.apply(a, b);
+
+
 // claculate cross platform path
 const path = require('path');
-const calcedPath = path.join('Day6', 'input2.txt');
+const calcedPath = path.join('Day6', 'input.txt');
 
 //read input from file
 const input = require('fs')
@@ -19,7 +24,7 @@ const root = getRootValue(treeMap);
 const pathFromSource = calcShortPathToRoot(treeMap, root, source);
 const pathFromDest = calcShortPathToRoot(treeMap, root, destination);
 // find first common father value
-const commonFather = pathFromSource.filter(element => pathFromDest.includes(element)).shift();
+const commonFather = pathFromSource.find(element => pathFromDest.includes(element));
 //short path to common father from source
 const indexOfCommonFatherInSourcePath = pathFromSource.indexOf(commonFather);
 pathFromSource.splice(indexOfCommonFatherInSourcePath, pathFromSource.length - indexOfCommonFatherInSourcePath);
@@ -35,11 +40,13 @@ function getRootValue(tree) {
     return Object.entries(tree).map(([_, parent]) => parent).find(p => !isChildren(p));
 }
 
-function calcShortPathToRoot(tree, root, node, path = []) {
+function calcShortPathToRoot(tree, root, node) {
+    var array = [];
     if (node != root) {
+        console.log("node is: " + node)
         var father = tree[node]
-        path.push(father);
-        calcShortPathToRoot(tree, root, father, path);
+        array.push(node);
+        array.push.apply(array, calcShortPathToRoot(tree, root, father));
     }
-    return path;
+    return array;
 }
