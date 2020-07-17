@@ -1,12 +1,16 @@
+// claculate cross platform path
+const path = require('path');
+const calcedPath = path.join('Day6', 'input.txt');
 
 //read input from file
 const input = require('fs')
-    .readFileSync('./Day6/input.txt')
+    .readFileSync(calcedPath)
     .toString()
 
 //take input and make it a dictinioary [node] = fatherNode
 var treeMap = new Object();
-input.split('\n').forEach(row => treeMap[row.split(')')[1]] = row.split(')')[0]);
+const crossPlatformEndOfFile = require('os').EOL; 
+input.split(crossPlatformEndOfFile).forEach(row => treeMap[row.split(')')[1]] = row.split(')')[0]);
 
 // Find root and calculate sum
 const root = getRootValue(treeMap);
