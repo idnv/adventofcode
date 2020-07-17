@@ -7,25 +7,21 @@ const input = require('fs')
 //take input and make it a dictinioary [node] = fatherNode
 var treeMap = new Object();
 input.split('\n').forEach(row => treeMap[row.split(')')[1]] = row.split(')')[0]);
-//Claculate sum of All Degrees
-var sum = 0;
-var degree = 0;
-var parents = new Array();
 
+// Find root and calculate sum
 const root = getRootValue(treeMap);
 console.debug("Tree root is: " + root)
-parents.push(getRootValue(treeMap));
+console.log("Sum: " + caculateSum(treeMap, root))
 
-console.debug("child: " + getChildren(treeMap, root))
-
-while (parents.length) {
-    sum += parents.length * degree;
-    degree++;
-
-    parents = parents.flatMap(p => getChildren(treeMap, p));
+function caculateSum(tree, root, currentDegree = 0) {
+    const children = getChildren(tree, root);
+    const childrenSums = children.map(c => caculateSum(tree, c, currentDegree + 1));
+    return currentDegree + sum(childrenSums);
 }
-console.log("Total sum is: " + sum);
 
+function sum(arr, initialValue = 0) {
+    return arr.reduce((a, b) => a + b, initialValue);
+}
 
 function getRootValue(tree) {
     const isChildren = (p) => treeMap.hasOwnProperty(p);
