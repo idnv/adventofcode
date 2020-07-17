@@ -1,10 +1,10 @@
 // set source and dest
-const source = "YOU";
-const destination = "SAN";
+const source = "COM";
+const destination = "COM";
 
 // claculate cross platform path
 const path = require('path');
-const calcedPath = path.join('Day6', 'input.txt');
+const calcedPath = path.join('Day6', 'input2.txt');
 
 //read input from file
 const input = require('fs')
@@ -31,6 +31,6 @@ function getRootValue(tree) {
 }
 
 function calcShortPathToRoot(tree, root, node) {
-    if (node == root) return [];
+    if (node == root || node == undefined) return [root];
     return [node].concat(calcShortPathToRoot(tree, root, tree[node]));
 }
