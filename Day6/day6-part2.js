@@ -1,6 +1,6 @@
 // set source and dest
-const source = "COM";
-const destination = "COM";
+const source = "YOU";
+const destination = "SAN";
 
 // claculate cross platform path
 const path = require('path');
