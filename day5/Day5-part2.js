@@ -3,28 +3,29 @@ var numOfParameter = { 1: 3, 2: 3, 3: 1, 4: 1, 5: 2, 6: 2, 7: 3, 8: 3, 99: 0 };
 var inputPointer;
 
 //Main Run
-run(input, 1);
+run(input, 5);
 
 function run(input, phase = 0) {
+    // get next Instruction from generator function
     for (const instruction of getInstruction()) {
-        if (instruction.Opcode == 99) {
-            console.log("The ans is: " + input[0]);
-            return;
-        }
+        // clac int code in int code machine
         const ans = doInstruction(input, instruction, phase);
+        // if there is no return value (return value is "undefined") or the value returned is 0 keep running
         if (ans !== 0 && ans !== undefined) {
+            // the machine returned it's diagnostic code 
             console.log("The ans is: " + ans);
             return;
         }
     }
 }
-
+// return value depends on mode value (immediate mode or position mode)
 function getValue(index, intCode, mode) {
-    return mode === 0 ? intCode[index] : index;
+    return mode === 0 ? intCode[intCode[index]] : intCode[index];
 }
 //this function get's the next Instruction to do
-function* getInstruction(index = 0) {
-    inputPointer = index;
+function* getInstruction() {
+    // set start pointer to start of the input/intcode
+    inputPointer = 0;
     while (inputPointer < input.length) {
         let instruction = input[inputPointer];
         let opcode = instruction % 100;
@@ -40,33 +41,33 @@ function* getInstruction(index = 0) {
 }
 
 function doInstruction(intCode, instruction, phase = 5) {
-    let paramIndex = instruction.ParameterIndex;
+    let index = instruction.ParameterIndex;
     let mode = instruction.Mode;
     switch (instruction.Opcode) {
         case 1:
-            intCode[intCode[paramIndex[2]]] = intCode[getValue(paramIndex[0], intCode, mode[0])] + intCode[getValue(paramIndex[1], intCode, mode[1])]
+            intCode[intCode[index[2]]] = getValue(index[0], intCode, mode[0]) + getValue(index[1], intCode, mode[1]);
             break;
         case 2:
-            intCode[intCode[paramIndex[2]]] = intCode[getValue(paramIndex[0], intCode, mode[0])] * intCode[getValue(paramIndex[1], intCode, mode[1])]
+            intCode[intCode[index[2]]] = getValue(index[0], intCode, mode[0]) * getValue(index[1], intCode, mode[1]);
             break;
         case 3:
-            intCode[intCode[paramIndex[0]]] = phase;
+            intCode[intCode[index[0]]] = phase;
             break;
         case 4:
-            return intCode[getValue(paramIndex[0], intCode, mode[0])];
+            return getValue(index[0], intCode, mode[0]);
         case 5:
-            if (intCode[getValue(paramIndex[0], intCode, mode[0])])
-                inputPointer = intCode[getValue(paramIndex[1], intCode, mode[1])];
+            if (getValue(index[0], intCode, mode[0]))
+                inputPointer = getValue(index[1], intCode, mode[1]);
             break;
         case 6:
-            if (!intCode[getValue(paramIndex[0], intCode, mode[0])])
-                inputPointer = intCode[getValue(paramIndex[1], intCode, mode[1])]
+            if (!getValue(index[0], intCode, mode[0]))
+                inputPointer = getValue(index[1], intCode, mode[1]);
             break;
         case 7:
-            intCode[intCode[paramIndex[2]]] = intCode[getValue(paramIndex[0], intCode, mode[0])] < intCode[getValue(paramIndex[1], intCode, mode[1])]
+            intCode[intCode[index[2]]] = getValue(index[0], intCode, mode[0]) < getValue(index[1], intCode, mode[1]);
             break;
         case 8:
-            intCode[intCode[paramIndex[2]]] = intCode[getValue(paramIndex[0], intCode, mode[0])] === intCode[getValue(paramIndex[1], intCode, mode[1])]
+            intCode[intCode[index[2]]] = getValue(index[0], intCode, mode[0]) === getValue(index[1], intCode, mode[1]);
             break;
         case 99:
             return intCode[0];
