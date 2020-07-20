@@ -1,6 +1,10 @@
+// set source and dest
+const source = "YOU";
+const destination = "SAN";
+
 // claculate cross platform path
 const path = require('path');
-const calcedPath = path.join('Day6', 'input2.txt');
+const calcedPath = path.join('Day6', 'input.txt');
 
 //read input from file
 const input = require('fs')
@@ -11,35 +15,22 @@ const input = require('fs')
 var treeMap = new Object();
 const crossPlatformEndOfFile = require('os').EOL;
 input.split(crossPlatformEndOfFile).forEach(row => treeMap[row.split(')')[1]] = row.split(')')[0]);
-// set source and dest
-const source = "YOU";
-const destination = "SAN";
 const root = getRootValue(treeMap);
 // calc paths from source and dest to root 
-const pathFromSource = calcShortPathToRoot(treeMap, root, source);
-const pathFromDest = calcShortPathToRoot(treeMap, root, destination);
+const pathFromSource = calcShortPathToRoot(treeMap, root, treeMap[source]);
+const pathFromDest = calcShortPathToRoot(treeMap, root, treeMap[destination]);
 // find first common father value
-const commonFather = pathFromSource.filter(element => pathFromDest.includes(element)).shift();
-//short path to common father from source
-const indexOfCommonFatherInSourcePath = pathFromSource.indexOf(commonFather);
-pathFromSource.splice(indexOfCommonFatherInSourcePath, pathFromSource.length - indexOfCommonFatherInSourcePath);
-//short path to common father from destination
-const indexOfCommonFatherInDestPath = pathFromDest.indexOf(commonFather);
-pathFromDest.splice(indexOfCommonFatherInDestPath, pathFromDest.length - indexOfCommonFatherInDestPath);
-// calculate answer
-var answer = pathFromSource.length + pathFromDest.length;
-
+const commonFather = pathFromSource.find(element => pathFromDest.includes(element));
+// calculate the sum of path from source and dest to common father
+const answer = pathFromSource.indexOf(commonFather) + pathFromDest.indexOf(commonFather);
+console.log("Ans: " + answer);
 
 function getRootValue(tree) {
     const isChildren = (p) => treeMap.hasOwnProperty(p);
     return Object.entries(tree).map(([_, parent]) => parent).find(p => !isChildren(p));
 }
 
-function calcShortPathToRoot(tree, root, node, path = []) {
-    if (node != root) {
-        var father = tree[node]
-        path.push(father);
-        calcShortPathToRoot(tree, root, father, path);
-    }
-    return path;
+function calcShortPathToRoot(tree, root, node) {
+    if (node == root || node == undefined) return [root];
+    return [node].concat(calcShortPathToRoot(tree, root, tree[node]));
 }
